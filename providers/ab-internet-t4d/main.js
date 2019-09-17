@@ -12,26 +12,26 @@ var g_headers = {
 
 function main() {
 	var prefs = AnyBalance.getPreferences();
-	var baseurl = 'http://www.t4d.ru/';
+	var baseurl = 'https://www.t4d.ru/';
 	AnyBalance.setDefaultCharset('utf-8');
 	
 	checkEmpty(prefs.login, 'Введите логин!');
 	checkEmpty(prefs.password, 'Введите пароль!');
 	
-	var html = AnyBalance.requestGet(baseurl + 'stat/index.php', g_headers);
+	var html = AnyBalance.requestGet(baseurl + 'net/bill/index.php', g_headers);
 	
 	if(!html || AnyBalance.getLastStatusCode() > 400)
 		throw new AnyBalance.Error('Ошибка при подключении к сайту провайдера! Попробуйте обновить данные позже.');
         
-	html = AnyBalance.requestPost(baseurl + 'stat/ath.php', {
+	html = AnyBalance.requestPost(baseurl + 'net/bill/ath.php', {
 		'email': prefs.login,
 		'password': prefs.password
-	}, addHeaders({Referer: baseurl + 'stat/ath.php'}));
+	}, addHeaders({Referer: baseurl + 'net/bill/ath.php'}));
 
-    var html = AnyBalance.requestGet(baseurl + 'stat/index.php', g_headers); 
+    var html = AnyBalance.requestGet(baseurl + 'net/bill/index.php', g_headers); 
 	
 	if (!/Выход/i.test(html)) {
-        var html = AnyBalance.requestGet(baseurl + 'stat/ath.php', g_headers); 
+        var html = AnyBalance.requestGet(baseurl + 'net/bill/ath.php', g_headers); 
 		var error = getParam(html, null, null, /copy(?:[^>]*>){2}([\s\S]*?)<form/i, replaceTagsAndSpaces, html_entity_decode);
 		if (error)
 			throw new AnyBalance.Error(error, null, /Неверный логин или пароль/i.test(error));
